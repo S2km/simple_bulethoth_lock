@@ -1,0 +1,12 @@
+.checkBox-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40rpx;
+  line-height: 40rpx;
+  font-size: 30rpx;
+}
+
+.checkBox-des-wrap {
+  padding-left: 10rpx;
+}

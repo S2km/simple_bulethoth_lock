@@ -1,0 +1,11 @@
+{
+  "disableScroll": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "t-textarea": "tdesign-miniprogram/textarea/textarea",
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-button": "tdesign-miniprogram/button/button",
+    "check-box": "./components/checkBox/index",
+    "t-navbar": "tdesign-miniprogram/navbar/navbar"
+  }
+}

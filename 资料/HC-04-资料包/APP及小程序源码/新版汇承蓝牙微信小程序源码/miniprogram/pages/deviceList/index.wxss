@@ -1,0 +1,23 @@
+page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.deviceList-header {
+  padding: 0 40rpx;
+  height: 80rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size: 30rpx;
+}
+
+.deviceList-content {
+  width: 100vw;
+  height: 100vh;
+  padding: 20rpx;
+  box-sizing: border-box;
+}

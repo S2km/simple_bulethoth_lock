@@ -1,0 +1,6 @@
+<view class="redirect-page">
+  <view class="redirect-card">
+    <view class="redirect-title">Opening Home</view>
+    <view class="redirect-text">This compatibility page now forwards to the new tab-based Mini Program experience.</view>
+  </view>
+</view>

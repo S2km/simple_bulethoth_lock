@@ -1,0 +1,11 @@
+<view class="deviceCard-wrap" bindtap="onTap">
+  <view class="device-info">
+    <view class="device-name">
+      <view class="name">{{device.name || device.localName || 'Unknown Device'}}</view>
+      <view wx:if="{{device.beacon}}" class="beacon">iBeacon</view>
+    </view>
+    <view class="device-id">DeviceId：{{device.deviceId}}</view>
+    <view class="device-id">UUID: {{device.advertisServiceUUIDs[0] || null}}</view>
+  </view>
+  <view class="device-rssi">RSSI：{{device.RSSI}}</view>
+</view>

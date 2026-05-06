@@ -1,0 +1,251 @@
+<scroll-view class="page" scroll-y>
+  <view class="masthead">
+    <view class="masthead-kicker">锁具设置</view>
+    <view class="masthead-title">商用化设备参数</view>
+    <view class="masthead-subtitle">
+      这里集中管理连接、可信手机、PIN 与自动重锁等配置，和首页共用同一套运行时状态。
+    </view>
+  </view>
+
+  <view class="panel panel-intro">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">状态总览</view>
+        <view class="panel-title">{{connectionLabel}}</view>
+      </view>
+      <view class="status-pill {{connectionPillClass}}">{{runtimeReady ? '界面已联动' : '等待中'}}</view>
+    </view>
+    <view class="panel-copy">{{connectionDetail}}</view>
+    <view class="panel-copy panel-copy-accent">自动化: {{automationStateLabel}}</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">连接偏好</view>
+        <view class="panel-title">记忆门锁档案</view>
+      </view>
+      <view class="status-pill neutral">{{selectedRelockSeconds}} 秒自动重锁</view>
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="setting-label">自动连接</view>
+        <view class="setting-help">启动后自动连接上次成功连接过的门锁。</view>
+      </view>
+      <switch checked="{{lockProfile && lockProfile.autoConnect}}" disabled="{{!profileSettingsEnabled}}" bindchange="handleAutoConnectProfileToggle" color="#0f68e8" />
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="setting-label">本地保存 PIN</view>
+        <view class="setting-help">生产模式下默认关闭，本机不再明文保存 PIN。</view>
+      </view>
+      <switch checked="{{lockProfile && lockProfile.savePinEnabled}}" disabled="{{!profileSettingsEnabled}}" bindchange="handleSavePinToggle" color="#0f68e8" />
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">自动化</view>
+        <view class="panel-title">可信手机联动</view>
+      </view>
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="setting-label">自动认证</view>
+        <view class="setting-help">需当前会话先输入有效 PIN，可信手机靠近后才会自动认证。</view>
+      </view>
+      <switch checked="{{lockProfile && lockProfile.autoAuth}}" disabled="{{!canAdministerLock}}" bindchange="handleAutoAuthToggle" color="#0f68e8" />
+    </view>
+
+    <view class="setting-row">
+      <view>
+        <view class="setting-label">靠近自动开锁</view>
+        <view class="setting-help">认证成功后，达到设定距离可继续自动开锁。</view>
+      </view>
+      <switch checked="{{lockProfile && lockProfile.proximityUnlock}}" disabled="{{!canAdministerLock}}" bindchange="handleProximityUnlockToggle" color="#0f68e8" />
+    </view>
+
+    <view class="setting-stack">
+      <view class="setting-label">距离阈值</view>
+      <view class="setting-help">通过 RSSI 调整触发距离，数值越大代表需要更近。</view>
+      <input
+        class="text-input"
+        type="text"
+        maxlength="3"
+        value="{{rssiThresholdInput}}"
+        bindinput="handleRssiThresholdInput"
+        bindfocus="handleRssiThresholdFocus"
+        bindblur="handleRssiThresholdBlur"
+        placeholder="-60"
+        disabled="{{!canAdministerLock}}"
+      />
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">可信手机</view>
+        <view class="panel-title">绑定与管理</view>
+      </view>
+    </view>
+
+    <view class="input-stack">
+      <input
+        class="text-input"
+        maxlength="20"
+        value="{{bindNicknameInput}}"
+        bindinput="handleBindNicknameInput"
+        bindfocus="handleBindNicknameFocus"
+        bindblur="handleBindNicknameBlur"
+        placeholder="请输入当前手机备注名"
+        disabled="{{!profileSettingsEnabled}}"
+      />
+      <button class="action-button secondary wide" bindtap="handleBindTap" disabled="{{!canAdministerLock}}">
+        绑定当前手机
+      </button>
+    </view>
+
+    <view class="trusted-list">
+      <block wx:if="{{trustedPhoneView.length}}">
+        <view wx:for="{{trustedPhoneView}}" wx:key="clientId" class="trusted-item">
+          <view class="trusted-copy">
+            <view class="trusted-name">{{item.nickname}}</view>
+            <view class="trusted-meta">{{item.clientId}}</view>
+            <view class="trusted-state">{{item.statusText}}</view>
+          </view>
+          <button class="ghost-button" data-client-id="{{item.clientId}}" bindtap="handleUnbindTap" disabled="{{!canAdministerLock}}">
+            移除
+          </button>
+        </view>
+      </block>
+      <view wx:else class="empty-state">
+        暂无可信手机。连接门锁后，可先绑定当前手机。
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">锁具安全</view>
+        <view class="panel-title">修改门锁 PIN</view>
+      </view>
+    </view>
+
+    <view class="input-stack">
+      <input
+        class="text-input"
+        type="text"
+        maxlength="11"
+        password
+        value="{{authPinInput}}"
+        bindinput="handlePinInput"
+        bindfocus="handlePinFocus"
+        bindblur="handlePinBlur"
+        placeholder="当前 PIN"
+        disabled="{{!canAdministerLock}}"
+      />
+      <input
+        class="text-input"
+        type="text"
+        maxlength="11"
+        password
+        value="{{newPinInput}}"
+        bindinput="handleNewPinInput"
+        bindfocus="handleNewPinFocus"
+        bindblur="handleNewPinBlur"
+        placeholder="新 PIN"
+        disabled="{{!canAdministerLock}}"
+      />
+      <input
+        class="text-input"
+        type="text"
+        maxlength="11"
+        password
+        value="{{newPinConfirmInput}}"
+        bindinput="handleNewPinConfirmInput"
+        bindfocus="handleNewPinConfirmFocus"
+        bindblur="handleNewPinConfirmBlur"
+        placeholder="确认新 PIN"
+        disabled="{{!canAdministerLock}}"
+      />
+      <button class="action-button secondary wide" bindtap="handleChangePinTap" disabled="{{!canChangePin}}">
+        修改 PIN
+      </button>
+    </view>
+  </view>
+
+  <view class="panel panel-last">
+    <view class="panel-header maintenance-panel-header">
+      <view>
+        <view class="panel-kicker">门锁行为</view>
+        <view class="panel-title">自动重锁时长</view>
+      </view>
+    </view>
+
+    <view class="relock-grid compact-grid">
+      <button class="relock-chip {{selectedRelockSeconds == 3 ? 'relock-chip-active' : ''}}" data-seconds="3" bindtap="handleRelockTap" disabled="{{!canAdministerLock}}">
+        3 秒
+      </button>
+      <button class="relock-chip {{selectedRelockSeconds == 5 ? 'relock-chip-active' : ''}}" data-seconds="5" bindtap="handleRelockTap" disabled="{{!canAdministerLock}}">
+        5 秒
+      </button>
+      <button class="relock-chip {{selectedRelockSeconds == 8 ? 'relock-chip-active' : ''}}" data-seconds="8" bindtap="handleRelockTap" disabled="{{!canAdministerLock}}">
+        8 秒
+      </button>
+      <button class="relock-chip {{selectedRelockSeconds == 10 ? 'relock-chip-active' : ''}}" data-seconds="10" bindtap="handleRelockTap" disabled="{{!canAdministerLock}}">
+        10 秒
+      </button>
+    </view>
+  </view>
+
+  <view class="panel panel-last">
+    <view class="panel-header maintenance-panel-header">
+      <view class="maintenance-head-copy">
+        <view class="panel-kicker">维护调试</view>
+        <view class="maintenance-title-row">
+          <view class="panel-title maintenance-title">舵机控制</view>
+          <view class="status-pill neutral maintenance-angle-pill">{{currentAngle}}°</view>
+        </view>
+      </view>
+      <view class="maintenance-head-actions">
+        <view class="maintenance-toggle-copy">
+          <view class="maintenance-toggle-label">实时模式</view>
+          <view class="maintenance-toggle-help">{{sliderHintText}}</view>
+        </view>
+        <view class="maintenance-toggle-switch">
+          <switch checked="{{realtimeMode}}" bindchange="handleRealtimeToggle" color="#0f68e8" />
+        </view>
+      </view>
+    </view>
+
+    <view class="slider-shell compact-slider">
+      <slider
+        min="0"
+        max="180"
+        step="1"
+        value="{{currentAngle}}"
+        activeColor="#0f68e8"
+        backgroundColor="#cfdef2"
+        bindchanging="handleSliderChanging"
+        bindchange="handleSliderChange"
+        disabled="{{!canSend}}"
+        show-value
+      />
+    </view>
+
+    <view class="relock-grid maintenance-grid compact-grid">
+      <button class="relock-chip {{currentAngle == 0 ? 'relock-chip-active' : ''}}" data-angle="0" bindtap="handlePresetTap" disabled="{{!canSend}}">0°</button>
+      <button class="relock-chip {{currentAngle == 45 ? 'relock-chip-active' : ''}}" data-angle="45" bindtap="handlePresetTap" disabled="{{!canSend}}">45°</button>
+      <button class="relock-chip {{currentAngle == 90 ? 'relock-chip-active' : ''}}" data-angle="90" bindtap="handlePresetTap" disabled="{{!canSend}}">90°</button>
+      <button class="relock-chip {{currentAngle == 135 ? 'relock-chip-active' : ''}}" data-angle="135" bindtap="handlePresetTap" disabled="{{!canSend}}">135°</button>
+      <button class="relock-chip {{currentAngle == 180 ? 'relock-chip-active' : ''}}" data-angle="180" bindtap="handlePresetTap" disabled="{{!canSend}}">180°</button>
+      <button class="action-button secondary compact-send-button" bindtap="handleSendCurrentTap" disabled="{{!canSend}}">发送当前角度</button>
+    </view>
+  </view>
+</scroll-view>

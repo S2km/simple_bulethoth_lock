@@ -1,0 +1,11 @@
+<view class="checkBox-wrap wrap-class">
+  <t-icon
+    name="{{ checked ? 'check-circle-filled' : 'circle' }}"
+    color="{{ checked ? '#0052d9' : '#ccc' }}"
+    size="45rpx"
+    bindtap="onTapCheck"/>
+  <view class="checkBox-des-wrap">
+    <slot></slot>
+    {{checkDes}}
+  </view>
+</view>

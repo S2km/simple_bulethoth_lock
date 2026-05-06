@@ -1,0 +1,45 @@
+<t-navbar
+  class="nav-wrap"
+  title="{{ deviceName }}"
+  left-arrow
+/>
+
+<view class="nav-header">
+  <text>服务列表</text>
+</view>
+
+<view class="uuidList-body">
+  <t-collapse defaultValue="{{[0]}}" expandMutex expandIcon>
+    <t-collapse-panel
+      wx:for="{{deviceServices}}"
+      wx:for-index="i"
+      t-class="uuidList-item-wrap"
+      t-class-header="uuidCard-header"
+      value="{{i}}">
+      <view slot="header">
+        <view class="header-label">
+          <text class="bolder">ServiceUUID</text>
+          <text wx:if="{{item.isPrimary}}" class="header-sub-label" decode>&nbsp;Primary</text>
+        </view>
+        <view class="header-content">{{item.uuid}}</view>
+      </view>
+      <view class="uuidCard-content" wx:if="{{item.characteristics.length}}">
+        <view class="sub-header"><text class="bold">Characteristics</text></view>
+        <view class="sub-content"
+          wx:for="{{item.characteristics}}"
+          wx:for-item="subItem"
+          wx:key="index"
+          mark:serviceId="{{item.uuid}}"
+          mark:characteristic="{{subItem}}"
+          bindtap="handleCharacteristicTap">
+          <view class="sub-content-left">{{subItem.uuid}}</view>
+          <view class="sub-content-right">
+            <text wx:if="{{subItem.properties.write}}" decode>WRITE&nbsp;</text>
+            <text wx:if="{{subItem.properties.read}}" decode>READ&nbsp;</text>
+            <text wx:if="{{subItem.properties.notify}}" decode>NOTIFY&nbsp;</text>
+          </view>
+        </view>
+      </view>
+    </t-collapse-panel>
+  </t-collapse>
+</view>

@@ -1,0 +1,18 @@
+<view class="deviceList-header">
+  <text>附近设备</text>
+</view>
+<t-pull-down-refresh
+  value="{{refreshing}}"
+  loadingProps="{{loadingProps}}"
+  loadingTexts="{{['下拉刷新', '松手刷新', '正在刷新', '刷新完成']}}"
+  bindrefresh="handlePullDownRefresh">
+  <view class="deviceList-content">
+    <device-card
+      wx:for="{{devicesList}}"
+      wx:key="index"
+      device="{{item}}"
+      bindtapDeviceCard="onTapDevice"
+    />
+    <view style="height: 120rpx"/>
+  </view>
+</t-pull-down-refresh>

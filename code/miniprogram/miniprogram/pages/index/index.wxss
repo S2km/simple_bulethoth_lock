@@ -1,0 +1,33 @@
+.redirect-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f5f9ff 0%, #edf3fb 100%);
+}
+
+.redirect-card {
+  width: 100%;
+  max-width: 620rpx;
+  padding: 42rpx 36rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #dde7f4;
+  box-shadow: 0 14rpx 30rpx rgba(18, 52, 88, 0.08);
+  text-align: center;
+}
+
+.redirect-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #17324f;
+}
+
+.redirect-text {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: #607991;
+}

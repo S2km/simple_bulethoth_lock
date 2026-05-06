@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/deviceList/index",
+    "pages/uuidList/index",
+    "pages/comm/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#0052d9",
+    "navigationBarTitleText": "HCBLE串口助手",
+    "navigationBarTextStyle": "white",
+    "onReachBottomDistance": 0
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "resolveAlias": {
+    "@configs/*": "configs/*",
+    "@utils/*": "utils/*",
+    "@libs/*": "libs/*"
+  }
+}

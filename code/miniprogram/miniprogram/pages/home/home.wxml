@@ -1,0 +1,194 @@
+<scroll-view class="page" scroll-y>
+  <view class="hero hero-{{connectionTone}}">
+    <view class="hero-decoration hero-decoration-one"></view>
+    <view class="hero-decoration hero-decoration-two"></view>
+
+    <view class="hero-top">
+      <view class="hero-copy">
+        <view class="hero-kicker">日常控制</view>
+        <view class="hero-title">{{connectionLabel}}</view>
+        <view class="hero-subtitle">{{connectionDetail}}</view>
+      </view>
+
+      <view class="hero-side">
+        <view class="runtime-indicator">
+          <view class="status-dot {{runtimeReady ? 'status-dot-on' : 'status-dot-off'}}"></view>
+          <text class="runtime-text">{{runtimeReady ? '在线' : '离线'}}</text>
+        </view>
+
+        <view class="signal-box">
+          <view class="signal-top">
+            <view class="wifi-icon" aria-hidden="true">
+              <view class="wifi-bar wifi-bar-sm"></view>
+              <view class="wifi-bar wifi-bar-md"></view>
+              <view class="wifi-bar wifi-bar-lg"></view>
+            </view>
+            <text class="signal-value">{{currentRssi === null ? '--' : currentRssi}}</text>
+          </view>
+          <text class="signal-label">信号强度</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="hero-summary-row">
+      <view class="hero-card hero-card-half">
+        <text class="hero-card-label">最近动作</text>
+        <text class="hero-card-value">{{recentActionText}}</text>
+      </view>
+      <view class="hero-card hero-card-half">
+        <text class="hero-card-label">自动化</text>
+        <text class="hero-card-value">{{automationStateLabel}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel command-panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">门锁访问</view>
+        <view class="panel-title">认证后执行操作</view>
+      </view>
+      <view class="status-pill {{authTone === 'ready' ? 'status-on' : 'status-off'}}">{{authStatusLabel}}</view>
+    </view>
+
+    <view class="status-copy">{{authStatusDetail}}</view>
+
+    <view class="pin-row">
+      <input
+        class="pin-input"
+        type="text"
+        maxlength="11"
+        password
+        value="{{authPinInput}}"
+        bindinput="handlePinInput"
+        bindfocus="handlePinFocus"
+        bindblur="handlePinBlur"
+        placeholder="请输入 6 到 11 位 PIN"
+      />
+      <button
+        class="action-button pin-submit-button {{canAuthenticate ? 'primary' : 'disabled'}}"
+        bindtap="handleAuthenticateTap"
+        disabled="{{!canAuthenticate}}"
+      >
+        认证
+      </button>
+    </view>
+
+    <view class="button-row">
+      <button
+        class="action-button row-button {{canUnlock ? 'secondary' : 'disabled'}}"
+        data-action="LOCK"
+        bindtap="handleLockActionTap"
+        disabled="{{!canUnlock}}"
+      >
+        上锁
+      </button>
+      <button
+        class="action-button row-button {{canUnlock ? 'primary' : 'disabled'}}"
+        data-action="UNLOCK"
+        bindtap="handleLockActionTap"
+        disabled="{{!canUnlock}}"
+      >
+        开锁
+      </button>
+    </view>
+  </view>
+
+  <view class="panel connection-panel {{connectionPanelClass}}">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">连接状态</view>
+        <view class="panel-title">设备连接与控制链路</view>
+      </view>
+      <view class="status-pill {{connectionPillClass}}">{{connectionLabel}}</view>
+    </view>
+
+    <view class="connection-meta">
+      <view class="meta-row">
+        <text class="meta-label">详情</text>
+        <text class="meta-value">{{connectionDetail}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-label">自动重连</text>
+        <switch checked="{{autoReconnect}}" bindchange="handleAutoReconnectToggle" color="#0f68e8" />
+      </view>
+    </view>
+
+    <view class="button-row connection-actions">
+      <button class="action-button row-button primary" bindtap="handleScanTap" disabled="{{!adapterReady}}">扫描设备</button>
+      <button class="action-button row-button secondary" bindtap="handleDisconnectTap" disabled="{{!isConnected}}">断开连接</button>
+    </view>
+
+    <view class="device-section" wx:if="{{!compactConnectionPanel}}">
+      <view class="device-section-header">
+        <view class="section-title">附近门锁</view>
+        <button class="ghost-button" wx:if="{{showDeviceToggle}}" bindtap="handleToggleDevices">{{deviceToggleText}}</button>
+      </view>
+
+      <block wx:if="{{visibleDeviceList.length}}">
+        <view
+          wx:for="{{visibleDeviceList}}"
+          wx:key="deviceId"
+          class="device-item"
+          data-id="{{item.deviceId}}"
+          data-name="{{item.name}}"
+          bindtap="handleDeviceTap"
+        >
+          <view>
+            <view class="device-name-row">
+              <text class="device-name">{{item.name}}</text>
+              <text class="device-chip" wx:if="{{item.isPreferred}}">{{item.preferredTagText}}</text>
+            </view>
+            <view class="device-id">{{item.deviceId}}</view>
+          </view>
+          <view class="device-rssi">信号 {{item.RSSI}}</view>
+        </view>
+      </block>
+
+      <view wx:else class="empty-state">
+        扫描后可发现目标门锁，并建立控制会话。
+      </view>
+    </view>
+  </view>
+
+  <view class="panel activity-panel">
+    <view class="panel-header">
+      <view>
+        <view class="panel-kicker">活动记录</view>
+        <view class="panel-title">快速状态摘要</view>
+      </view>
+      <button class="ghost-button" bindtap="handleToggleLogs">{{logsToggleText}}</button>
+    </view>
+
+    <view class="summary-grid">
+      <view class="summary-card">
+        <text class="summary-label">连接</text>
+        <text class="summary-value">{{connectionLabel}}</text>
+      </view>
+      <view class="summary-card">
+        <text class="summary-label">动作</text>
+        <text class="summary-value">{{recentActionText}}</text>
+      </view>
+      <view class="summary-card">
+        <text class="summary-label">自动化</text>
+        <text class="summary-value">{{automationStateLabel}}</text>
+      </view>
+    </view>
+
+    <view class="logs-area" wx:if="{{!logsExpanded}}">
+      <block wx:if="{{summaryLogs.length}}">
+        <view wx:for="{{summaryLogs}}" wx:key="id" class="log-item">{{item.text}}</view>
+      </block>
+      <view wx:else class="empty-state">
+        运行时事件和门锁操作会显示在这里。
+      </view>
+    </view>
+
+    <scroll-view class="logs-area logs-area-expanded" scroll-y wx:if="{{logsExpanded}}">
+      <block wx:if="{{logs.length}}">
+        <view wx:for="{{logs}}" wx:key="id" class="log-item">{{item.text}}</view>
+      </block>
+      <view wx:else class="empty-state">暂时还没有日志。</view>
+    </scroll-view>
+  </view>
+</scroll-view>

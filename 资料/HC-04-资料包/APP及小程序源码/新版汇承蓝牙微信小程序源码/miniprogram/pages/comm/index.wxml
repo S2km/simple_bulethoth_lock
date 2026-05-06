@@ -1,0 +1,62 @@
+<!-- 导航栏 -->
+<t-navbar
+  class="nav-wrap"
+  title="{{ deviceName }}"
+  left-arrow
+/>
+
+<!-- 接收框 -->
+<t-text
+  class="rec-textarea-wrap"
+  style="color: {{ recTotal ? '#666' : '#aaa' }}"
+>
+  {{ recTotal ? recData : '接收框' }}
+</t-text>
+
+<view class="operations-wrap">
+  <view class="operations-total">
+    <t-tag theme="primary" variant="outline" style="margin-bottom: 5rpx">RX：{{recTotal}}</t-tag>
+    <t-tag theme="primary" variant="outline">TX：{{sendTotal}}</t-tag>
+  </view>
+  <view class="operations-btns">
+    <check-box
+      wx:for="{{checkboxOptions}}"
+      wx:key="index"
+      label="{{item.label}}"
+      checkValue="{{item.value}}"
+      wrap-class="operations-btns_checkBox"
+      data-index="{{index}}"
+      bindchange="handleModeChange"/>
+    <t-button icon="clear" size="small" bindtap="cleanReceived"/>
+  </view>
+</view>
+
+<!-- 发送框 -->
+<t-textarea
+  t-class="send-textarea-wrap"
+  t-class-textarea="send-textarea-content"
+  placeholder="发送框"
+  value="{{sendData}}"
+  bindchange="handleSendDataChange"
+  disabled="{{isCyclicSend}}" />
+
+<view class="operations-wrap">
+  <view class="operations-timer">
+    <check-box
+      label="循环发送"
+      checkValue="{{false}}"
+      wrap-class="operations-btns_checkBox"
+      bindchange="handleCycleSwitchChange"/>
+    <input
+      class="input-class"
+      type="number"
+      value="{{interval}}"
+      disabled="{{isCyclicSend}}"
+      bindinput="handleDelayChange"/>
+    <text style="font-size: 30rpx">ms</text>
+  </view>
+  <view class="operations-btns">
+    <t-button icon="clear" size="small" style="margin-right: 15rpx" bindtap="cleanSent"/>
+    <t-button theme="primary" size="small" bindtap="handleSendTap">发 送</t-button>
+  </view>
+</view>

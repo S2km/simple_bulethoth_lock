@@ -1,0 +1,50 @@
+# OS / editor
+Thumbs.db
+Desktop.ini
+.history/
+.learnings/
+.playwright-cli/
+.superpowers/
+
+# KiCad autosave / generated outputs
+*-backups/
+out_svg/
+out_svg_v*/
+*.kicad_prl
+SmartDoorLock_erc*.rpt
+
+# Keil / MDK user files
+*.uvoptx
+*.uvguix*
+*.bak
+*.dep
+JLinkSettings.ini
+
+# Build artifacts
+*.o
+*.d
+*.crf
+*.axf
+*.elf
+*.hex
+*.map
+*.lnp
+*.lst
+*.htm
+*.build_log.htm
+*.sct.Bak
+**/OBJ/
+code/test/MDK-ARM/test/
+
+# Logs and temp
+*.log
+code/test/tmp/
+_tmp_hc04_wx/
+_tmp_hc04_sdk/
+
+# Archives
+*.zip
+*.rar
+
+# Node / Mini Program local deps
+node_modules/

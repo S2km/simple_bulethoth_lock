@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "HCBLE串口助手",
+  "disableScroll": true,
+  "usingComponents": {
+    "t-pull-down-refresh": "tdesign-miniprogram/pull-down-refresh/pull-down-refresh",
+    "device-card": "./components/deviceCard/index"
+  }
+}
