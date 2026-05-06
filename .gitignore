@@ -48,3 +48,8 @@ _tmp_hc04_sdk/
 
 # Node / Mini Program local deps
 node_modules/
+
+# Project policy: keep repo source-focused
+docs/
+code/**/docs/
+code/**/tests/
